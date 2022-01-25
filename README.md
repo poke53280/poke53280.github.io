@@ -1,7 +1,5 @@
-# Zoom with Tooltip
-#
-# Originally forked from: https://observablehq.com/@d3/zoom-with-tooltip@156
-#
+# D3 Zoom based on https://www.d3indepth.com/zoom-and-pan/
+
 
 
 
