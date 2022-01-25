@@ -1,5 +1,9 @@
-# d3-timeline
+# Zoom with Tooltip
+#
+# Originally forked from: https://observablehq.com/@d3/zoom-with-tooltip@156
+#
 
-# Experiments with the d3-timeline package. LICENCE MIT
+
+
 
 
