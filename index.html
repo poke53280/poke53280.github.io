@@ -126,7 +126,7 @@ function update() {
             current_opacity = d3.select("#jj").attr("fill-opacity");
 
             if (current_opacity > 0) {
-                move_duration = 300;
+                move_duration = 500;
             } else {
                 move_duration = 0;
             }
@@ -136,10 +136,9 @@ function update() {
                 .text("" + i.grad + "%")
                 .style("font-size", "7px")
                 .attr("y", 230)
-                .transition().duration(move_duration).attr("x", (i.fom + i.tom) / 2)
-                .attr("fill-opacity", 1);
+                .transition().duration(move_duration).attr("x", (i.fom + i.tom) / 2);
 
-                       
+            d3.select("#jj").transition().duration('500').attr("fill-opacity", 1);                       
         
         })
 
