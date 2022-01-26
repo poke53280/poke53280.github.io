@@ -2,7 +2,7 @@
 <html>
 <head>
 <style>
-circle {
+rect {
 	opacity: 0.7;
 }
 
@@ -11,22 +11,25 @@ circle {
 <body>
 
 <div>
-    <svg width="1600" height="1400">
-      <g></g>
+    <svg width="1600" height="1200">
+    <g>
+        <text id="jj" x = "400" y = "300")></text>
+    </g>
+    
     </svg>
-  </div>
-
-  
+</div>
 
 </body>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.2.0/d3.min.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
 
+let data = [], width = 1600, height = 1200, numPoints = 15;
 
-let data = [], width = 1600, height = 1400, numPoints = 100;
+let week_bars = [];
 
 let zoom = d3.zoom()
+    
 	.on('zoom', handleZoom);
 
 function handleZoom(e) {
@@ -39,29 +42,123 @@ function initZoom() {
 		.call(zoom);
 }
 
+function update_week_bars() {
+    week_bars = [];
+    for(let i=0; i<52; i++) {
+        week_bars.push({
+			id: i,
+			start_day: i * 7
+		});
+
+    }
+
+
+}
+
+
 function updateData() {
+    last_tom = -1;
 	data = [];
 	for(let i=0; i<numPoints; i++) {
+        if (last_tom == -1) {
+            fom = 0;
+        } else {
+            isContinue = Math.random() > 0.3;
+            if (isContinue) {
+                fom = last_tom + 1;
+            } else {
+                frisk = 1  + 100 * Math.random() | 0;
+                fom = last_tom + frisk;
+            }
+        }
+        L = 1 + (20 * Math.random()) | 0;
+
+        tom = fom + L;
+
+        grad = [20, 40, 60, 80, 100][Math.floor(Math.random() * 5)]
+
+
 		data.push({
 			id: i,
-			x: Math.random() * width,
-			y: Math.random() * height
+			fom: fom,
+			tom: tom,
+            grad: grad
 		});
-	}
+        last_tom = tom;
+    }
 }
 
 function update() {
+    
+    d3.select('svg g').selectAll('text').data(week_bars).join('text')
+        
+        .attr('y', 178)
+        .attr('x', function(d) { return d.start_day; })
+        .style("fill", "black")
+        .style("font-size", "3px")
+        .text(function(d) { return "" + d.start_day/7 | 0;})
+
+    d3.select('svg g').selectAll('line').data(week_bars).join('line')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 0.1)
+        .attr('y1', 180)
+        .attr('y2', 220)
+        .attr('x1', function(d) { return d.start_day; })
+        .attr('x2', function(d) { return d.start_day; });        
+    
 	d3.select('svg g')
-		.selectAll('circle')
+		.selectAll('rect')
 		.data(data)
-		.join('circle')
-		.attr('cx', function(d) { return d.x; })
-		.attr('cy', function(d) { return d.y; })
-		.attr('r', 3);
-}
+		.join('rect')
+		.attr('x', function(d) { return d.fom; })
+		.attr('y', 190)
+		.attr('width', function(d) { return d.tom - d.fom; })
+        .attr('height', 30)
+        .attr('fill', 'red')
+        .attr('fill-opacity', function(d) { return d.grad/100.0; })
+
+        .on('mouseover', function (d, i) {
+            
+            d3.select(this).transition()
+               .duration('500')
+               .attr('y', '200');
+
+            current_opacity = d3.select("#jj").attr("fill-opacity");
+
+            if (current_opacity > 0) {
+                move_duration = 300;
+            } else {
+                move_duration = 0;
+            }
+            
+
+            d3.select("#jj")
+                .text("" + i.grad + "%")
+                .style("font-size", "7px")
+                .attr("y", 230)
+                .transition().duration(move_duration).attr("x", (i.fom + i.tom) / 2)
+                .attr("fill-opacity", 1);
+
+                       
+        
+        })
+
+        .on('mouseout', function (d, i) {
+            d3.select(this).transition()
+               .duration('200')
+               .attr('y', '190');
+            d3.select("#jj").transition().duration('500').attr("fill-opacity", 0);
+
+
+         })               
+               
+        ;
+        
+}   
 
 initZoom();
 updateData();
+update_week_bars();
 update();
 </script>
 
