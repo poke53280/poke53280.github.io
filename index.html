@@ -13,7 +13,7 @@ rect {
 <div>
     <svg width="1600" height="1200">
     <g>
-        <text id="jj" x = "400" y = "300")></text>
+        <text id="jj" x = "400" y = "300"></text>
     </g>
     
     </svg>
@@ -29,7 +29,6 @@ let data = [], width = 1600, height = 1200, numPoints = 15;
 let week_bars = [];
 
 let zoom = d3.zoom()
-    
 	.on('zoom', handleZoom);
 
 function handleZoom(e) {
@@ -75,14 +74,17 @@ function updateData() {
 
         tom = fom + L;
 
-        grad = [20, 40, 60, 80, 100][Math.floor(Math.random() * 5)]
+        grad = [20, 40, 60, 80, 100][Math.floor(Math.random() * 5)];
+        
+        diagnose = ['A01', 'A02', 'A03', 'A04'][Math.floor(Math.random() * 4)];
 
 
 		data.push({
 			id: i,
 			fom: fom,
 			tom: tom,
-            grad: grad
+            grad: grad,
+            diagnose: diagnose
 		});
         last_tom = tom;
     }
@@ -123,22 +125,12 @@ function update() {
                .duration('500')
                .attr('y', '200');
 
-            current_opacity = d3.select("#jj").attr("fill-opacity");
-
-            if (current_opacity > 0) {
-                move_duration = 500;
-            } else {
-                move_duration = 0;
-            }
-            
-
             d3.select("#jj")
-                .text("" + i.grad + "%")
+                .text("" + i.grad + "%. Diagnose: " + i.diagnose)
                 .style("font-size", "7px")
                 .attr("y", 230)
-                .transition().duration(move_duration).attr("x", (i.fom + i.tom) / 2);
+                .attr("x", (i.fom + i.tom) / 2);
 
-            d3.select("#jj").transition().duration('500').attr("fill-opacity", 1);                       
         
         })
 
@@ -146,7 +138,7 @@ function update() {
             d3.select(this).transition()
                .duration('200')
                .attr('y', '190');
-            d3.select("#jj").transition().duration('500').attr("fill-opacity", 0);
+            
 
 
          })               
